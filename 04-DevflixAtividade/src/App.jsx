@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-import logo from "./assets/devflix.png";
+import logo from "./assets/jgflix.png";
 import lupa from "./assets/search.svg";
 
 import Rodape from "./components/Rodape/Rodape";
@@ -43,7 +43,7 @@ const App = () => {
           onKeyDown={(e) => e.key === "Enter" && searchMovies(search)}
           onChange={(e) => setSearch(e.target.value)}
           type="text"
-          placeholder="Pesquise por filmes"
+          placeholder="Procurar por filmes"
         />
         <img
           onClick={() => searchMovies(search)}
@@ -59,7 +59,9 @@ const App = () => {
           ))}
         </div>
       ) : (
-        <h2 className="empty">😢 Filme não encontrado 😢</h2>
+        <h2 className="empty">
+          🤬 Filme não encontrado 😭, Pesquise por outro
+        </h2>
       )}
 
       <Rodape link={"https://github.com/JoaoGaBriel4504"}>JoaoGabriel</Rodape>
