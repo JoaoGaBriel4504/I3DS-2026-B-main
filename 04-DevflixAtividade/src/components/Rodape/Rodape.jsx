@@ -1,14 +1,14 @@
 import React from "react";
-import "./Rodape.module.css";
+import styles from "./Rodape.module.css";
 
 const Rodape = ({ children, link, language }) => {
   return (
-    <footer>
+    <footer className={styles.footer}>
       <p>
         {language === "pt"
           ? "Feito com ❤️ por "
           : "Made with ❤️ by "}
-        
+
         <a
           href={link}
           target="_blank"
