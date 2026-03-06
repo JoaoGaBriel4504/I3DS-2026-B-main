@@ -140,9 +140,12 @@ const App = () => {
         </h2>
       )}
 
-      <Rodape link={"https://github.com/JoaoGaBriel4504"}>
-        JoaoGabriel
-      </Rodape>
+      <Rodape
+  link={"https://github.com/JoaoGaBriel4504"}
+  language={language}
+>
+  JoaoGabriel
+</Rodape>
 
     </div>
   );
