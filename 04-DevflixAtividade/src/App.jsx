@@ -10,61 +10,140 @@ import MovieCard from "./components/MovieCard/MovieCard";
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState("pt");
 
-  //Utilizando uma CHAVE de API do arquivo .env
   const apiKey = import.meta.env.VITE_OMDB_API_KEY;
   const apiUrl = `https://omdbapi.com/?apikey=${apiKey}`;
 
-  //Criando a conexão com a API e trazendo informações
+  // Alternar tema
+  const toggleTheme = () => {
+    if (darkMode) {
+      document.body.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    } else {
+      document.body.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    }
+
+    setDarkMode(!darkMode);
+  };
+
+  // Alternar idioma
+  const toggleLanguage = () => {
+    const novoIdioma = language === "pt" ? "en" : "pt";
+    setLanguage(novoIdioma);
+    localStorage.setItem("language", novoIdioma);
+  };
+
+  // Carregar preferências salvas
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      document.body.classList.add("dark");
+      setDarkMode(true);
+    }
+
+    const savedLang = localStorage.getItem("language");
+    if (savedLang) {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  // Buscar filmes
   const searchMovies = async (title) => {
     const response = await fetch(`${apiUrl}&s=${title}`);
     const data = await response.json();
 
-    //Alimentando a variavel movies
-    setMovies(data.Search);
+    if (data.Search) {
+      setMovies(data.Search);
+    } else {
+      setMovies([]);
+    }
   };
 
+  // Filme inicial
   useEffect(() => {
-    (async () => {
-      await searchMovies("Hulk"); // termo para pesquina ao carregar o site
-    })();
+    searchMovies("Hulk");
   }, []);
 
   return (
     <div id="App">
+
+      {/* BOTÃO DARK/LIGHT */}
+      <button className="themeButton" onClick={toggleTheme}>
+        {darkMode
+          ? language === "pt"
+            ? "☀️ Modo Claro"
+            : "☀️ Light Mode"
+          : language === "pt"
+          ? "🌙 Modo Escuro"
+          : "🌙 Dark Mode"}
+      </button>
+
+      {/* BOTÃO DE IDIOMA */}
+      <button className="languageButton" onClick={toggleLanguage}>
+        {language === "pt" ? "🇧🇷 PT-BR" : "🇺🇸 EN"}
+      </button>
+
       <img
         id="Logo"
         src={logo}
-        alt="Logotipo do serviço de streaming Devflix, com letras vermelhas e fundo preto, promovendo conteúdo de séries, filmes e entretenimento online."
+        alt={
+          language === "pt"
+            ? "Logotipo do serviço de streaming JGFLIX"
+            : "JGFLIX streaming service logo"
+        }
       />
 
+      {/* BUSCA */}
       <div className="search">
         <input
           onKeyDown={(e) => e.key === "Enter" && searchMovies(search)}
           onChange={(e) => setSearch(e.target.value)}
           type="text"
-          placeholder="Procurar por filmes"
+          placeholder={
+            language === "pt"
+              ? "Procurar por filmes"
+              : "Search for movies"
+          }
         />
+
         <img
           onClick={() => searchMovies(search)}
           src={lupa}
-          alt="Botão de ação para pesquisa!"
+          alt={language === "pt" ? "Botão de pesquisa" : "Search button"}
         />
       </div>
 
-      {movies?.length > 0 ? (
+      {/* LISTA DE FILMES */}
+      {movies.length > 0 ? (
         <div className="container">
           {movies.map((movie, index) => (
-            <MovieCard key={index} {...movie} apiUrl={apiUrl} />
+            <MovieCard
+              key={index}
+              Title={movie.Title}
+              Year={movie.Year}
+              Poster={movie.Poster}
+              Type={movie.Type}
+              imdbID={movie.imdbID}
+              apiUrl={apiUrl}
+              language={language}
+            />
           ))}
         </div>
       ) : (
         <h2 className="empty">
-          🤬 Filme não encontrado 😭, Pesquise por outro
+          {language === "pt"
+            ? "🤬 Filme não encontrado 😭, pesquise por outro"
+            : "🤬 Movie not found 😭, try another search"}
         </h2>
       )}
 
-      <Rodape link={"https://github.com/JoaoGaBriel4504"}>JoaoGabriel</Rodape>
+      <Rodape link={"https://github.com/JoaoGaBriel4504"}>
+        JoaoGabriel
+      </Rodape>
+
     </div>
   );
 };
